@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Microbiologia">
+<meta name="theme-color" content="#fbeff3">
+<style>html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Microbiologia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: app de uma coluna, abas no topo, cartão central grande para estudar no celular */
+:root{
+  --bg:#fbeff3; --surface:#fffafc; --ink:#2e1a24; --muted:#7a5d69; --line:#f0d3de;
+  --accent:#b23c73; --accent-soft:#fadbe7; --good:#2c7a39; --good-soft:#e0f0e2; --bad:#b03e2d; --bad-soft:#f6e3df;
+  --display:"Young Serif",Georgia,serif; --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1c1218; --surface:#271a21; --ink:#f5e6ec; --muted:#c09fad; --line:#3e2a34;
+  --accent:#f4a6c6; --accent-soft:#4a2737; --good:#74c681; --good-soft:#1c3221; --bad:#ec8572; --bad-soft:#3a221d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1218; --surface:#271a21; --ink:#f5e6ec; --muted:#c09fad; --line:#3e2a34;
+  --accent:#f4a6c6; --accent-soft:#4a2737; --good:#74c681; --good-soft:#1c3221; --bad:#ec8572; --bad-soft:#3a221d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+nav.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav.tabs button{font:inherit;font-weight:600;font-size:13px;border:0;background:transparent;color:var(--muted);padding:10px 2px;min-width:0;border-radius:9px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface)}
+button:focus-visible,.chip:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 22px;min-height:260px;display:flex;flex-direction:column;justify-content:center;gap:14px;cursor:pointer;user-select:none;box-shadow:0 1px 0 var(--line)}
+.card .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.card .front{font-family:var(--display);font-size:clamp(22px,5vw,28px);line-height:1.25;text-wrap:balance}
+.card .back{font-size:17px;border-top:1px dashed var(--line);padding-top:14px}
+.card .hint{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:13px 18px;border-radius:12px;cursor:pointer;flex:1;min-width:120px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.good{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.btn.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+.q{font-family:var(--display);font-size:clamp(20px,4.6vw,25px);line-height:1.3;margin:0;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;font-size:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:13px 16px;border-radius:12px;cursor:pointer}
+.opt.right{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.why{background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:15px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.score{font-family:var(--display);font-size:56px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+textarea{font:inherit;font-size:15px;width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);color:var(--ink);resize:vertical}
+.gq{display:flex;flex-direction:column;gap:10px;padding-block:16px;border-top:1px solid var(--line)}
+.gq:first-of-type{border-top:0;padding-top:0}
+.gq .n{font-family:var(--mono);font-size:13px;color:var(--accent)}
+.gq p{margin:0}
+.model{background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:15px}
+.model ul{margin:6px 0 0;padding-left:20px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.f{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;font-family:var(--mono);font-size:12px;vertical-align:middle;margin:0 1px}
+.frac span:first-child{border-bottom:1px solid currentColor;padding:0 2px}
+.small{font-size:13px;color:var(--muted);margin:0}
+.miss{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.cheer{background:var(--accent-soft);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.cheer-h{font-family:var(--display);font-size:22px;color:var(--accent)}
+.cheer p{margin:0;font-size:16px}
+.chk{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Microbiologia básica · Revisão</span>
+    <h1>Boa prova, Neném <span aria-hidden="true" style="color:var(--accent)">♥</span></h1>
+    <p class="sub">As 29 questões da revisão em cartões, quiz e respostas de conferência, na ordem da lista.</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="cards" aria-selected="true">Cartões</button>
+    <button role="tab" data-tab="quiz" aria-selected="false">Quiz</button>
+    <button role="tab" data-tab="guia" aria-selected="false">Questões</button>
+    <button role="tab" data-tab="resumo" aria-selected="false">Resumo</button>
+  </nav>
+
+  <div class="chips" id="topics"></div>
+
+  <section id="tab-cards"></section>
+  <section id="tab-quiz" hidden></section>
+  <section id="tab-guia" hidden></section>
+  <section id="tab-resumo" hidden></section>
+</div>
+
+<script>
+const TOPICS={intro:"Introdução e Koch",meios:"Meios de cultura",ident:"Espécie e identificação",temp:"Temperatura",nutri:"Nutrição microbiana"};
+
+const CARDS=[
+["intro","O que é Microbiologia?","Ciência que estuda os microrganismos e agentes biológicos que, em sua maioria, não se veem a olho nu: estrutura, metabolismo, genética e relação com hospedeiros e ambiente."],
+["intro","Principais grupos estudados","Bactérias, arqueias, fungos (leveduras e bolores), protozoários, algas microscópicas e vírus (agentes acelulares)."],
+["intro","Por que a microbiologia importa na Veterinária?","Diagnóstico e tratamento de doenças infecciosas, zoonoses e saúde pública, vacinas, uso correto de antimicrobianos, segurança de leite e carne e microbiota benéfica (rúmen, intestino)."],
+["intro","Microrganismo benéfico na saúde animal","Microbiota do rúmen: bactérias, protozoários e fungos digerem a celulose, e o ruminante aproveita os ácidos graxos voláteis produzidos."],
+["intro","Exemplos de microrganismo causando doença animal","Brucella abortus (brucelose, zoonose), Leptospira (leptospirose), Clostridium tetani (tétano), Staphylococcus aureus (mastite), vírus da raiva."],
+["intro","Microrganismos na produção de alimentos","Lactobacillus no iogurte e no queijo; Saccharomyces cerevisiae no pão, na cerveja e no vinho. Também estragam alimentos e causam intoxicação (Salmonella, Clostridium botulinum)."],
+["intro","Microrganismos na indústria","Antibióticos (penicilina do fungo Penicillium, estreptomicina de Streptomyces), enzimas, vacinas, insulina produzida por E. coli recombinante."],
+["intro","Microrganismos no meio ambiente","Decompõem matéria orgânica e reciclam carbono e nitrogênio, fixam nitrogênio (Rhizobium), tratam esgoto e limpam poluentes (biorremediação)."],
+["intro","Robert Koch: principais feitos","Provou que Bacillus anthracis causa o carbúnculo (1876); descobriu o bacilo da tuberculose (1882) e o vibrião da cólera (1883); criou a técnica de cultura pura em meio sólido e os postulados. Nobel em 1905."],
+["intro","O que é cultura pura?","População de uma única espécie de microrganismo, descendente de uma só célula (uma colônia isolada)."],
+["intro","Por que a cultura pura é importante?","Permite estudar um só microrganismo, identificá-lo, testar antibióticos (antibiograma) e provar que ele causa uma doença (base dos postulados de Koch)."],
+["intro","Como obter cultura pura?","Semear a amostra em meio sólido por esgotamento em estrias (ou por diluição em placa) para separar as células; cada colônia isolada vem de uma célula e é repicada para outro meio."],
+["intro","Postulados de Koch","1) O microrganismo está presente em todos os casos da doença. 2) É isolado e cultivado em cultura pura. 3) Inoculado em animal sadio e suscetível, causa a mesma doença. 4) É reisolado do animal inoculado e é igual ao original."],
+["intro","Limitações dos postulados de Koch","Microrganismos que não crescem em meio de cultura (Mycobacterium leprae, Treponema pallidum, vírus), portadores sadios, doenças causadas por mais de um agente e falta de modelo animal."],
+["meios","O que é meio de cultura?","Mistura de nutrientes preparada em laboratório para o crescimento de microrganismos."],
+["meios","Finalidades do meio de cultura","Cultivar, isolar, identificar, contar, manter (estocar) e transportar microrganismos."],
+["meios","O que o meio precisa ter","Fonte de carbono e energia, nitrogênio, minerais, fatores de crescimento quando exigidos, água, pH e pressão osmótica adequados, e estar estéril antes de semear."],
+["meios","Meio quimicamente definido × complexo","Definido: composição química exata conhecida. Complexo: ingredientes de composição variável, como peptona, extrato de carne e extrato de levedura."],
+["meios","Meio líquido (caldo)","Sem ágar. Multiplica muitas células e serve para enriquecer; o crescimento aparece como turvação. Não separa colônias."],
+["meios","Meio sólido","Com 1,5 a 2% de ágar. Forma colônias isoladas: permite cultura pura, ver o aspecto da colônia e contar (UFC)."],
+["meios","Meio semissólido","Pouco ágar (cerca de 0,3 a 0,5%). Usado para testar motilidade."],
+["meios","Meio seletivo","Inibe uns microrganismos e favorece outros. Ex.: MacConkey (sais biliares e cristal violeta inibem Gram-positivos); Sabouraud (pH ácido favorece fungos)."],
+["meios","Meio diferencial","Mostra diferenças entre os microrganismos que crescem nele. Ex.: ágar sangue (tipo de hemólise), MacConkey (fermenta ou não a lactose)."],
+["meios","Meio de enriquecimento / enriquecido","Enriquecimento: favorece quem está em minoria na amostra (caldo selenito para Salmonella). Enriquecido: nutrientes extras para exigentes (ágar chocolate para Haemophilus)."],
+["meios","Gelatina como solidificante: problemas","Derrete por volta de 25 a 28 °C, então fica líquida a 37 °C (temperatura dos patógenos). E muitos microrganismos têm gelatinase e a liquefazem."],
+["meios","Por que o ágar substituiu a gelatina","Polissacarídeo de algas vermelhas que quase nenhum microrganismo degrada. Derrete perto de 100 °C e só endurece a 40–45 °C: fica sólido a 37 °C, aceita a amostra ainda líquido sem matar as células, é transparente e inerte. Sugestão de Fanny Hesse no laboratório de Koch."],
+["meios","Meio de cultura ideal","Barato e disponível; composição constante; fácil de preparar, esterilizar e armazenar sem perder qualidade; facilita recuperar o produto; gera pouco resíduo (baixo impacto ambiental); e dá bom crescimento."],
+["meios","Placa de Petri","Criada por Julius Petri, assistente de Koch: placa rasa com tampa para meio sólido, que reduz a contaminação."],
+["ident","Espécie bacteriana","Grupo de linhagens com muitas características em comum, diferente de outros grupos. Hoje se confirma pelo DNA: 16S rRNA ≥ 97–98,7% semelhante e genoma muito parecido (hibridização DNA-DNA ≥ 70% ou ANI ≥ 95%)."],
+["ident","Por que uma característica só não basta","Espécies diferentes podem ter a mesma forma, o mesmo Gram ou o mesmo teste positivo, e uma espécie pode variar conforme o meio. É preciso o conjunto."],
+["ident","Características fenotípicas","O que se observa: forma e arranjo da célula, coloração de Gram, aspecto da colônia, motilidade, provas bioquímicas (catalase, oxidase, fermentação de açúcares), sorologia, MALDI-TOF."],
+["ident","Características genéticas","O que está no DNA: sequência do gene 16S rRNA, PCR, conteúdo G+C, hibridização DNA-DNA, sequenciamento do genoma."],
+["ident","Fenotípica × genética","Fenótipo é o que o microrganismo expressa e pode mudar com o ambiente; genótipo é a informação do DNA, mais estável e precisa. Juntas, uma confirma a outra."],
+["ident","Classificação filogenética","Agrupa os microrganismos pelo parentesco evolutivo, principalmente comparando o gene 16S rRNA."],
+["temp","Temperaturas cardinais","Mínima (abaixo dela não cresce), ótima (crescimento mais rápido) e máxima (acima dela não cresce)."],
+["temp","Por que a temperatura afeta o crescimento","Controla a velocidade das reações enzimáticas e a fluidez da membrana. Até a ótima, as reações aceleram; passando da máxima, as proteínas desnaturam."],
+["temp","Abaixo da temperatura mínima","A membrana fica rígida, o transporte de nutrientes para e as enzimas ficam lentas: não cresce, mas costuma sobreviver. Por isso a geladeira conserva e não esteriliza."],
+["temp","Acima da temperatura máxima","Desnaturação de proteínas e enzimas e dano à membrana: o crescimento para bruscamente e a célula pode morrer."],
+["temp","Formato da curva temperatura × crescimento","Assimétrica: sobe devagar da mínima até a ótima e cai rápido logo depois, porque a ótima fica mais perto da máxima."],
+["temp","Aumento de 10 °C abaixo da ótima","Dentro da faixa adequada, a velocidade das reações e do crescimento aproximadamente dobra."],
+["temp","Psicrófilos","Ótima até 15 °C, máxima perto de 20 °C. Regiões polares, mar profundo."],
+["temp","Psicrotróficos","Crescem a 0–7 °C (geladeira), mas a ótima fica em 20–30 °C. Estragam alimentos refrigerados (ex.: Listeria)."],
+["temp","Mesófilos","Ótima entre 20 e 45 °C. A maioria dos patógenos de animais, com ótima perto de 37 °C."],
+["temp","Termófilos e hipertermófilos","Termófilos: ótima de 45 a 80 °C (fontes termais, compostagem). Hipertermófilos: ótima acima de 80 °C, quase todos arqueias."],
+["nutri","Nutrição microbiana","Obter do ambiente matéria (elementos para construir a célula) e energia (luz ou compostos químicos) para o metabolismo, o crescimento e a multiplicação."],
+["nutri","Macronutrientes","Elementos exigidos em grande quantidade: C, H, O, N, P e S (formam as moléculas da célula), mais K, Mg, Ca e Fe."],
+["nutri","Carbono","Esqueleto de todas as moléculas orgânicas; cerca de 50% do peso seco da célula."],
+["nutri","Nitrogênio","Proteínas, ácidos nucleicos e coenzimas; cerca de 12% do peso seco. Vem de amônia, nitrato, aminoácidos ou N₂ (fixadores)."],
+["nutri","Fósforo","Ácidos nucleicos (DNA, RNA), fosfolipídios da membrana e ATP."],
+["nutri","Enxofre","Aminoácidos cisteína e metionina, vitaminas (tiamina, biotina) e coenzima A."],
+["nutri","K, Mg, Ca e Fe","K: ativa enzimas e síntese de proteínas. Mg: estabiliza ribossomos, membranas e ácidos nucleicos. Ca: estabiliza a parede e dá resistência ao endósporo. Fe: citocromos e proteínas da respiração."],
+["nutri","Micronutrientes (elementos-traço)","Exigidos em quantidades mínimas: Zn, Mn, Mo, Co, Cu, Ni, Se. Funcionam como cofatores de enzimas."],
+["nutri","Micronutriente: pouco, mas essencial","Precisa de pouco porque a enzima é reutilizada, mas sem ele a enzima não funciona e a via para. Ex.: Co na vitamina B12, Mo na nitrogenase, Zn em polimerases, Ni na urease."],
+["nutri","Fatores de crescimento","Compostos orgânicos que o microrganismo precisa mas não consegue produzir: vitaminas, aminoácidos, purinas e pirimidinas."],
+["nutri","Função das vitaminas","Formam coenzimas: niacina → NAD, riboflavina → FAD, ácido pantotênico → coenzima A, tiamina → TPP, ácido fólico → síntese de nucleotídeos."],
+["nutri","Microrganismo fastidioso (exigente)","Precisa de muitos fatores de crescimento. Ex.: Haemophilus exige fator X (hemina) e fator V (NAD); cresce em ágar chocolate."],
+["nutri","Autotrófico","Usa CO₂ como fonte de carbono e o fixa em compostos orgânicos (ex.: cianobactérias, bactérias nitrificantes)."],
+["nutri","Heterotrófico","Não usa CO₂ como fonte de carbono: precisa de compostos orgânicos prontos (açúcares, aminoácidos, ácidos graxos, ácidos orgânicos). Inclui os patógenos de animais, fungos e protozoários."],
+["nutri","Fototrófico × quimiotrófico","Classificação pela fonte de energia: luz (foto) ou oxidação de compostos químicos (quimio)."],
+["nutri","Quimio-heterotrófico","Tira energia e carbono de compostos orgânicos. É o grupo da maioria das bactérias de interesse veterinário."],
+["nutri","Uso de açúcares, aminoácidos e ácidos graxos","Açúcares: glicólise → ATP e esqueletos de carbono. Aminoácidos: proteínas, fonte de N e, após desaminação, de carbono e energia. Ácidos graxos: membranas e energia pela β-oxidação."],
+["nutri","Lei do mínimo (Liebig)","O crescimento é limitado pelo nutriente essencial que está em menor disponibilidade, não pela quantidade total de nutrientes."]
+];
+
+const QUIZ=[
+["intro","Qual grupo é formado por agentes acelulares estudados pela microbiologia?",["Vírus","Bactérias","Arqueias","Protozoários"],"Vírus não têm célula e só se multiplicam dentro de células hospedeiras."],
+["intro","Qual microrganismo é usado na fabricação de pão e cerveja?",["Saccharomyces cerevisiae","Lactobacillus","Brucella abortus","Clostridium tetani"],"É uma levedura (fungo) que fermenta açúcares produzindo CO₂ e etanol."],
+["intro","Exemplo de papel benéfico de microrganismos na saúde animal:",["Digestão da celulose no rúmen","Mastite em vacas","Brucelose","Tétano"],"Sem a microbiota ruminal o bovino não aproveita a celulose do capim."],
+["intro","Exemplo de microrganismo na indústria farmacêutica:",["Penicillium produzindo penicilina","Leptospira causando leptospirose","Rhizobium fixando nitrogênio","Lactobacillus no iogurte"],"Rhizobium é exemplo ambiental e Lactobacillus é de alimentos."],
+["intro","Exemplo de papel de microrganismos no meio ambiente:",["Fixação de nitrogênio por Rhizobium","Produção de insulina por E. coli","Fermentação do iogurte","Brucelose bovina"],"Também decompõem matéria orgânica e tratam esgoto."],
+["intro","Koch provou pela primeira vez que uma bactéria causa uma doença ao estudar:",["Carbúnculo (antraz), Bacillus anthracis","Tuberculose","Cólera","Raiva"],"Em 1876. Tuberculose (1882) e cólera (1883) vieram depois."],
+["intro","Bacilo descoberto por Koch em 1882:",["Mycobacterium tuberculosis","Bacillus anthracis","Vibrio cholerae","Clostridium tetani"],"Por esse trabalho ele recebeu o Nobel em 1905."],
+["intro","O que é uma cultura pura?",["População de uma única espécie, vinda de uma só célula","Meio de cultura estéril, ainda sem semear","Mistura dos microrganismos de uma amostra clínica","Cultura feita em meio quimicamente definido"],"Meio estéril sem semear ainda não é cultura."],
+["intro","Técnica clássica para obter colônias isoladas:",["Esgotamento por estrias em meio sólido","Cultivo em caldo","Centrifugação da amostra","Coloração de Gram"],"Espalhando a amostra em estrias, as células ficam separadas e cada uma forma uma colônia."],
+["intro","Primeiro postulado de Koch:",["O microrganismo está presente em todos os casos da doença","O microrganismo é cultivado em cultura pura","O microrganismo inoculado causa a mesma doença","O microrganismo é reisolado do animal inoculado"],"Na ordem: presente nos doentes, cultura pura, reproduz a doença, reisolado."],
+["intro","Último postulado de Koch:",["Reisolar do animal inoculado o mesmo microrganismo","Isolar em cultura pura","Inocular em animal sadio","Encontrar o microrganismo em todos os doentes"],"O reisolamento fecha o ciclo: o que foi inoculado é o que causou a doença."],
+["intro","Qual caso NÃO consegue cumprir os postulados de Koch?",["Mycobacterium leprae, que não cresce em meio de cultura","Bacillus anthracis no carbúnculo","Patógeno que cresce bem em ágar","Doença reproduzida em animal de laboratório"],"Sem cultivo em cultura pura, o 2º postulado falha."],
+["intro","Finalidade dos postulados de Koch:",["Provar que um microrganismo específico causa uma doença específica","Classificar bactérias pelo Gram","Esterilizar meios de cultura","Medir a temperatura ótima"],"Transformaram a teoria do germe em algo demonstrável."],
+["intro","Um portador sadio (infectado, sem sintomas) contraria qual postulado?",["O 1º: presente nos doentes e ausente nos sadios","O 2º: cultura pura","O 3º: reproduzir a doença","O 4º: reisolamento"],"Koch esperava não encontrar o agente em animais sadios."],
+["meios","Meio de cultura é:",["Mistura de nutrientes preparada para o crescimento de microrganismos","Qualquer amostra clínica","Um antibiótico de laboratório","Só o recipiente onde se faz a cultura"],"Pode ser líquido, semissólido ou sólido."],
+["meios","Por que o meio deve ser esterilizado antes do uso?",["Para que só cresça o microrganismo semeado","Para aumentar os nutrientes","Para solidificar o ágar","Para corrigir o pH"],"Normalmente em autoclave (121 °C)."],
+["meios","Meio com peptona e extrato de levedura é classificado como:",["Complexo","Quimicamente definido","Seletivo","Diferencial"],"Peptona e extratos têm composição variável."],
+["meios","Meio em que se conhece a quantidade exata de cada substância:",["Quimicamente definido","Complexo","Enriquecido","Semissólido"],"Usado em pesquisa de exigências nutricionais."],
+["meios","Concentração usual de ágar em meio sólido:",["1,5 a 2%","0,1%","10%","25%"],"Com 0,3–0,5% o meio fica semissólido."],
+["meios","Meio semissólido é usado principalmente para:",["Testar motilidade","Contar colônias","Guardar antibiótico","Fazer coloração de Gram"],"Microrganismo móvel turva o meio além da linha da picada."],
+["meios","Vantagem do meio sólido sobre o líquido:",["Formar colônias isoladas e obter cultura pura","Produzir mais células em menos espaço","Mostrar crescimento pela turvação","Dispensar esterilização"],"Cada colônia isolada vem de uma célula."],
+["meios","Em meio líquido, o crescimento bacteriano aparece como:",["Turvação do caldo","Colônias isoladas","Halo de hemólise","Endurecimento do meio"],"Também pode formar película ou depósito no fundo."],
+["meios","MacConkey inibe Gram-positivos e mostra quem fermenta lactose. Ele é:",["Seletivo e diferencial","Só enriquecido","Só diferencial","Quimicamente definido"],"Sais biliares e cristal violeta selecionam; lactose com indicador diferencia."],
+["meios","Ágar sangue mostrando tipos de hemólise é exemplo de meio:",["Diferencial","Seletivo","Quimicamente definido","Semissólido"],"Também é enriquecido, pelo sangue."],
+["meios","Meio que favorece um microrganismo que está em minoria na amostra:",["De enriquecimento","Diferencial","Quimicamente definido","Semissólido"],"Ex.: caldo selenito para Salmonella em fezes."],
+["meios","Principal problema da gelatina como solidificante:",["Derrete abaixo de 37 °C e é digerida por bactérias com gelatinase","É cara e difícil de achar","É tóxica para bactérias","Não deixa ver as colônias"],"Por isso o meio virava líquido na estufa."],
+["meios","O ágar é extraído de:",["Algas vermelhas","Ossos e pele de animais","Fungos","Bactérias do solo"],"Gelatina é que vem do colágeno animal."],
+["meios","Temperatura em que o ágar fundido volta a ficar sólido:",["Cerca de 40–45 °C","Cerca de 100 °C","Cerca de 25 °C","Abaixo de 0 °C"],"Ele só derrete perto de 100 °C. Essa diferença deixa misturar a amostra no ágar ainda líquido sem matar as células."],
+["meios","Quem sugeriu o ágar no laboratório de Koch?",["Fanny Hesse","Julius Petri","Louis Pasteur","Alexander Fleming"],"Ela usava ágar em geleias e doces. Petri criou a placa."],
+["meios","Por que o ágar continua sólido na estufa a 37 °C?",["Só derrete perto de 100 °C","Porque é uma proteína","Porque as bactérias o endurecem","Porque contém sangue"],"E quase nenhum microrganismo consegue degradá-lo."],
+["meios","Característica do meio ideal ligada ao impacto ambiental:",["Gerar pouco resíduo e de fácil tratamento","Ter cor forte","Ser importado","Ter muitos inibidores"],"Os outros critérios são custo, composição, armazenamento e recuperação do produto."],
+["meios","Por que o meio ideal deve ter composição constante?",["Para dar resultados iguais de um lote para outro","Para ficar mais caro","Para impedir o crescimento","Para dispensar controle de qualidade"],"Composição variável muda o crescimento e atrapalha a comparação."],
+["meios","“Recuperação do produto”, no meio ideal, significa:",["Facilitar separar e purificar o que foi produzido","Reaproveitar a placa de Petri","Recuperar o ágar depois do uso","Devolver a amostra ao animal"],"Ex.: separar células, enzimas ou antibiótico do caldo sem resíduos que atrapalhem."],
+["meios","Haemophilus exige fatores X e V. Qual meio usar?",["Ágar chocolate","Ágar nutriente simples","MacConkey","Água com glicose"],"No ágar chocolate o sangue aquecido libera hemina (X) e NAD (V)."],
+["meios","Para isolar fungos de uma amostra, um meio adequado é:",["Sabouraud","MacConkey","Ágar chocolate","Caldo selenito"],"O pH ácido do Sabouraud desfavorece muitas bactérias."],
+["ident","Melhor critério para confirmar que dois isolados são da mesma espécie:",["Conjunto de características, com comparação genética","Só a forma da célula","Só a cor da colônia","Só a coloração de Gram"],"Uma característica isolada pode ser igual em espécies diferentes."],
+["ident","Semelhança do 16S rRNA usada como referência para a mesma espécie:",["Cerca de 97–98,7% ou mais","Acima de 50%","Acima de 20%","Qualquer valor"],"Abaixo disso, provavelmente são espécies diferentes."],
+["ident","Qual destas é uma característica fenotípica?",["Coloração de Gram","Sequência do 16S rRNA","Conteúdo G+C","Hibridização DNA-DNA"],"As outras três vêm do DNA."],
+["ident","Qual destas é uma característica genética?",["Sequência do gene 16S rRNA","Forma da colônia","Teste da catalase","Motilidade"],"As outras três são observações do fenótipo."],
+["ident","Por que só características fenotípicas podem enganar?",["Variam com o meio, e espécies diferentes podem parecer iguais","Porque nunca mudam","Porque só valem para vírus","Porque são caras"],"A genética confirma o que a morfologia e a bioquímica sugerem."],
+["ident","A classificação filogenética se baseia em:",["Parentesco evolutivo, principalmente pelo 16S rRNA","Tamanho da colônia","Doença que o microrganismo causa","Meio onde cresce"],"Mostra quem descende de quem."],
+["ident","Testes de catalase e oxidase são exemplos de:",["Provas bioquímicas (fenotípicas)","Testes genéticos","Postulados de Koch","Meios de cultura"],"Detectam enzimas que o microrganismo produz."],
+["temp","Temperatura em que o crescimento é mais rápido:",["Ótima","Mínima","Máxima","Ambiente"],"Mínima, ótima e máxima são as temperaturas cardinais."],
+["temp","Abaixo da temperatura mínima, em geral o microrganismo:",["Para de crescer, mas sobrevive","Morre na hora","Cresce mais rápido","Forma colônias maiores"],"É o princípio da refrigeração."],
+["temp","Acima da temperatura máxima ocorre:",["Desnaturação de proteínas e enzimas, podendo matar a célula","Membrana rígida como gel","Crescimento mais rápido","Nada muda"],"Membrana rígida é o que acontece no frio."],
+["temp","Abaixo da ótima, subir uns 10 °C dentro da faixa adequada costuma:",["Dobrar aproximadamente a velocidade de crescimento","Matar o microrganismo","Parar o crescimento","Não mudar nada"],"As reações enzimáticas aceleram com o calor até a ótima."],
+["temp","A temperatura ótima fica mais perto da:",["Temperatura máxima","Temperatura mínima","Metade exata da faixa","Zero grau"],"Por isso a curva cai bruscamente logo depois da ótima."],
+["temp","Mínima 5 °C, ótima 30 °C, máxima 45 °C. A 2 °C ele:",["Não cresce, mas tende a sobreviver","Cresce no máximo","Morre por desnaturação","Cresce moderadamente"],"Abaixo da mínima o metabolismo para; o frio não costuma matar."],
+["temp","O mesmo microrganismo a 20 °C:",["Cresce, porém mais devagar que a 30 °C","Não cresce","Cresce no máximo","Morre"],"Está entre a mínima e a ótima."],
+["temp","O mesmo microrganismo a 30 °C:",["Crescimento máximo","Crescimento lento","Sem crescimento","Morte"],"É a temperatura ótima dele."],
+["temp","O mesmo microrganismo a 50 °C:",["Não cresce; proteínas desnaturam e ele pode morrer","Crescimento máximo","Crescimento lento","Fica parado sem sofrer dano"],"Passou da máxima (45 °C)."],
+["temp","Com ótima de 30 °C, esse microrganismo é classificado como:",["Mesófilo","Psicrófilo","Termófilo","Hipertermófilo"],"Mesófilos têm ótima entre 20 e 45 °C."],
+["temp","A maioria dos patógenos de mamíferos e aves é:",["Mesófila, com ótima perto de 37 °C","Psicrófila","Termófila","Hipertermófila"],"Combina com a temperatura do corpo do hospedeiro."],
+["temp","Bactéria que cresce na geladeira, mas tem ótima a 25 °C:",["Psicrotrófica","Psicrófila","Termófila","Hipertermófila"],"Psicrófila verdadeira tem ótima até 15 °C."],
+["temp","Por que a geladeira conserva alimentos?",["O frio desacelera ou para o crescimento, sem necessariamente matar","O frio esteriliza","O frio destrói toxinas","O frio mata todas as bactérias"],"Ao voltar à temperatura ambiente, as bactérias voltam a crescer."],
+["temp","Por que o frio abaixo da mínima reduz o crescimento?",["Membrana fica rígida e enzimas ficam lentas","Proteínas desnaturam","Os nutrientes somem","O ágar derrete"],"Desnaturação é efeito do calor acima da máxima."],
+["temp","Meio rico em nutrientes, mas temperatura errada: por que cresce mal?",["A temperatura controla as enzimas que usam os nutrientes","Os nutrientes deixam de existir","O ágar perde a função","O pH sempre muda"],"Nutriente sem enzima funcionando não vira célula nova."],
+["temp","Microrganismo cresce mais rápido numa faixa de temperatura. Numa população animal, isso leva a:",["Mais multiplicação, maior carga e mais chance de transmissão","Menos transmissão","Nenhum efeito","Morte do microrganismo"],"Ex.: mais casos de algumas doenças em épocas quentes."],
+["temp","Bactéria em ambiente que esquenta de dia e esfria à noite:",["Cresce nas horas perto da ótima e para nas frias, sobrevivendo se não passar da máxima","Morre toda noite","Cresce igual o dia todo","Só cresce à noite"],"O que mata é passar da máxima; o frio só pausa."],
+["nutri","Elementos que formam a maior parte da célula:",["C, H, O, N, P e S","Zn, Mn, Mo e Co","Na, Cl, I e F","Au, Ag, Cu e Pb"],"Zn, Mn, Mo e Co são micronutrientes."],
+["nutri","Elemento que é cerca de 50% do peso seco da célula:",["Carbono","Nitrogênio","Fósforo","Ferro"],"Nitrogênio é cerca de 12%."],
+["nutri","Fósforo é essencial para:",["Ácidos nucleicos, fosfolipídios e ATP","Só a parede celular","Formar o ágar","Dar cor à colônia"],"Fosfato está no esqueleto do DNA e do RNA."],
+["nutri","Enxofre entra na composição de:",["Cisteína, metionina e algumas vitaminas","Glicose","Fosfolipídios","Celulose"],"Também na coenzima A."],
+["nutri","Nitrogênio é necessário para sintetizar:",["Proteínas e ácidos nucleicos","Só açúcares","Só lipídios","Só água"],"Aminoácidos e bases nitrogenadas têm N."],
+["nutri","Ferro é importante principalmente para:",["Citocromos e proteínas da respiração","Formar a parede celular","Formar o endósporo","Formar flagelos"],"Por isso o hospedeiro esconde o ferro dos patógenos."],
+["nutri","Magnésio:",["Estabiliza ribossomos e membranas e ativa enzimas","É fonte de carbono","Forma flagelos","Substitui o nitrogênio"],"É cofator de muitas reações com ATP."],
+["nutri","Micronutrientes são:",["Elementos exigidos em quantidades mínimas que funcionam como cofatores","Nutrientes sem importância","O mesmo que vitaminas","Fontes de carbono"],"Ex.: Zn, Mn, Mo, Co, Cu, Ni."],
+["nutri","Por que micronutrientes são essenciais apesar da pequena quantidade?",["Sem eles as enzimas não funcionam e as vias metabólicas param","Fornecem a maior parte da energia","Formam a parede celular","São fonte de carbono"],"Pequena quantidade não quer dizer pouca importância."],
+["nutri","O cobalto é necessário porque faz parte da:",["Vitamina B12","Clorofila","Hemoglobina","Celulose"],"A clorofila tem magnésio; a hemoglobina, ferro."],
+["nutri","O molibdênio é cofator da:",["Nitrogenase (fixação de N₂)","Amilase","Lactase","Hemoglobina"],"Também da nitrato redutase."],
+["nutri","Função principal das vitaminas na nutrição microbiana:",["Formar coenzimas","Fonte principal de energia","Formar a parede","Solidificar o meio"],"Coenzimas ajudam as enzimas a funcionar."],
+["nutri","A niacina é precursora de:",["NAD","FAD","Coenzima A","TPP"],"FAD vem da riboflavina; CoA, do ácido pantotênico; TPP, da tiamina."],
+["nutri","O ácido pantotênico é precursor de:",["Coenzima A","NAD","FAD","ATP"],"A coenzima A participa do ciclo de Krebs e do metabolismo de ácidos graxos."],
+["nutri","Microrganismo que exige muitos fatores de crescimento é chamado:",["Fastidioso (exigente)","Autotrófico","Termófilo","Psicrófilo"],"Ex.: Haemophilus, Lactobacillus."],
+["nutri","Se falta no meio uma vitamina que o microrganismo não sabe sintetizar, ele:",["Não cresce ou cresce pouco, mesmo com os outros nutrientes","Cresce normalmente","Passa a usar CO₂","Vira autotrófico"],"A via que depende daquela coenzima para."],
+["nutri","Fatores de crescimento incluem:",["Vitaminas, aminoácidos, purinas e pirimidinas","Glicose e água","Ágar e gelatina","CO₂ e O₂"],"São orgânicos que o microrganismo não produz."],
+["nutri","Organismo que usa CO₂ como fonte de carbono:",["Autotrófico","Heterotrófico","Fastidioso","Quimio-heterotrófico"],"Fixa o CO₂, por exemplo pelo ciclo de Calvin."],
+["nutri","Organismo que depende de compostos orgânicos como fonte de carbono:",["Heterotrófico","Autotrófico","Fotoautotrófico","Quimioautotrófico"],"Açúcares, aminoácidos, ácidos graxos, ácidos orgânicos."],
+["nutri","A maioria dos patógenos de animais é:",["Quimio-heterotrófica","Fotoautotrófica","Quimioautotrófica","Foto-heterotrófica"],"Tira energia e carbono de compostos orgânicos do hospedeiro."],
+["nutri","Por que o microrganismo precisa de fonte de carbono?",["Para montar as moléculas da célula e, no heterotrófico, também obter energia","Só para manter o pH","Só para colorir a colônia","Não precisa"],"Carbono é o esqueleto de proteínas, lipídios, açúcares e ácidos nucleicos."],
+["nutri","Tirando a principal fonte de carbono do meio, o crescimento cai porque:",["Faltam esqueletos de carbono e energia (ATP) para a biossíntese","O meio solidifica","A temperatura muda","Sobra nitrogênio"],"Sem C não há síntese de componentes nem energia para dividir."],
+["nutri","Açúcares como a glicose são usados principalmente para:",["Energia (glicólise) e esqueletos de carbono","Fonte de enxofre","Formar ágar","Fonte de fósforo"],"Viram ATP e precursores das outras moléculas."],
+["nutri","Ácidos graxos podem ser usados para:",["Formar membranas e gerar energia pela β-oxidação","Formar ácidos nucleicos diretamente","Fixar CO₂","Formar ágar"],"Entram nos fosfolipídios da membrana."],
+["nutri","Aminoácidos podem fornecer:",["Material para proteínas, nitrogênio e, após desaminação, carbono e energia","Só fósforo","Só ferro","Luz"],"O esqueleto de carbono entra no metabolismo central."],
+["nutri","Um meio só com fonte de carbono não basta porque faltam:",["N, P, S, minerais, micronutrientes e fatores de crescimento","Nada, carbono basta","Só a cor","Só o ágar"],"E ainda precisam pH, temperatura, O₂ e pressão osmótica adequados."],
+["nutri","A lei do mínimo diz que o crescimento é limitado pelo:",["Nutriente essencial em menor disponibilidade","Nutriente mais abundante","Total de calorias","Volume do frasco"],"Basta faltar um para segurar todo o crescimento."],
+["nutri","Fonte de energia de um quimiotrófico:",["Oxidação de compostos químicos","Luz","CO₂","Calor do ambiente"],"Fototrófico é quem usa luz."],
+["nutri","Papel da nutrição no crescimento microbiano:",["Fornecer matéria e energia para o metabolismo, a síntese de componentes e a divisão","Só manter a temperatura","Só dar cor à colônia","Só proteger da luz"],"Catabolismo gera energia; anabolismo usa essa energia para construir a célula."]
+];
+
+const GUIA=[
+["Explique o que é microbiologia, quais são os principais grupos de microrganismos estudados e por que esse conhecimento é importante para a Medicina Veterinária.",["Microbiologia é a ciência que estuda os microrganismos e agentes biológicos que, em sua maioria, não se veem a olho nu: sua estrutura, metabolismo, genética e relação com hospedeiros e ambiente.","Grupos: bactérias, arqueias, fungos (leveduras e bolores), protozoários, algas microscópicas e vírus (agentes acelulares).","Na Veterinária: diagnóstico e tratamento de doenças infecciosas; zoonoses e saúde pública (Saúde Única); vacinas; uso correto de antimicrobianos e controle da resistência; qualidade de leite, carne e ovos; microbiota benéfica (rúmen, intestino)."]],
+["Explique como os microrganismos podem estar relacionados à saúde animal, às doenças, à produção de alimentos, à indústria e ao meio ambiente, com pelo menos um exemplo de cada.",["Saúde animal: microbiota do rúmen digere a celulose; microbiota intestinal compete com patógenos (probióticos).","Doenças: Brucella abortus (brucelose), Staphylococcus aureus (mastite), Leptospira, vírus da raiva.","Alimentos: Lactobacillus no iogurte e no queijo, Saccharomyces no pão; e também deterioração e intoxicação (Salmonella).","Indústria: penicilina (Penicillium), enzimas, vacinas, insulina produzida por E. coli recombinante.","Meio ambiente: decomposição, ciclos do carbono e do nitrogênio, fixação de N por Rhizobium, tratamento de esgoto, biorremediação.","Muitos são neutros (comensais): vivem na pele e mucosas sem causar dano."]],
+["Explique a importância de Robert Koch para a microbiologia, abordando culturas puras e postulados, e por que esses avanços foram importantes para relacionar microrganismos e doenças.",["Koch provou a teoria do germe: em 1876 mostrou que Bacillus anthracis causa o carbúnculo; depois descobriu o bacilo da tuberculose (1882) e o da cólera (1883). Nobel em 1905.","Desenvolveu a cultura pura em meio sólido (batata, gelatina e depois ágar, sugerido por Fanny Hesse); seu assistente Julius Petri criou a placa de Petri.","Formulou os postulados: um roteiro experimental para provar que um microrganismo específico causa uma doença específica.","Importância: a relação microrganismo-doença deixou de ser suposição e passou a ser demonstrada; isso permitiu identificar agentes, fazer diagnóstico, vacinas, tratamentos e medidas de controle."]],
+["Explique o que é uma cultura pura, por que ela é importante e como seu desenvolvimento contribuiu para o estudo das doenças infecciosas.",["Cultura pura: população de uma única espécie, descendente de uma só célula.","Como se obtém: semeando a amostra em meio sólido por esgotamento em estrias ou diluição; cada colônia isolada vem de uma célula e é repicada.","Importância: estudar características de um só microrganismo sem interferência de outros, identificar, fazer antibiograma, produzir vacinas.","Contribuição: permitiu separar o agente da doença dos demais microrganismos da amostra e cumprir os postulados de Koch."]],
+["Explique os postulados de Koch, sua finalidade e como contribuíram para estabelecer a relação entre um microrganismo específico e uma doença.",["1) O microrganismo deve estar presente em todos os casos da doença (e ausente em sadios).","2) Deve ser isolado do doente e cultivado em cultura pura.","3) A cultura pura, inoculada em animal sadio e suscetível, deve causar a mesma doença.","4) O microrganismo deve ser reisolado do animal inoculado e ser igual ao original.","Finalidade: provar a relação de causa e efeito entre um agente e uma doença. Foram usados para carbúnculo, tuberculose e cólera e viraram base da microbiologia médica.","Limitações: agentes que não crescem em meio (Mycobacterium leprae, vírus), portadores sadios, doenças com mais de um agente."]],
+["Explique o que é um meio de cultura, sua finalidade e quais características ele deve ter para permitir o crescimento adequado de um microrganismo.",["Meio de cultura: mistura de nutrientes preparada em laboratório para o crescimento de microrganismos.","Finalidade: cultivar, isolar, identificar, contar, manter e transportar.","Características: fonte de carbono e energia, nitrogênio, minerais (P, S, K, Mg, Fe), micronutrientes, fatores de crescimento para exigentes, água, pH adequado (bactérias em torno de 7), pressão osmótica adequada, estar estéril antes de semear.","Consistência conforme o uso (líquido, semissólido, sólido) e incubação na temperatura e atmosfera (O₂, CO₂, anaerobiose) certas para o microrganismo."]],
+["Explique quais características um meio de cultura ideal deve apresentar (custo, composição, armazenamento, recuperação do produto, impacto ambiental) e justifique cada uma.",["Custo baixo e disponibilidade: permite uso em rotina e em grande escala.","Composição constante e adequada: atende às necessidades nutricionais e dá resultados reprodutíveis de lote para lote.","Armazenamento: estável, sem perder qualidade nem contaminar; fácil de preparar e esterilizar.","Recuperação do produto: facilita separar e purificar o que interessa (células, enzimas, antibióticos) sem resíduos que atrapalhem.","Impacto ambiental: gera pouco resíduo, fácil de tratar e descartar.","E, acima de tudo, permite crescimento bom e rápido do microrganismo desejado."]],
+["Quais eram as limitações da gelatina como solidificante e por que o ágar passou a ser usado? Relacione suas propriedades com sua importância nos meios sólidos.",["Gelatina: proteína animal que derrete por volta de 25–28 °C; na incubação a 37 °C o meio virava líquido. E muitos microrganismos produzem gelatinase e a liquefazem.","Ágar: polissacarídeo de algas vermelhas, sugerido por Fanny Hesse no laboratório de Koch.","Propriedades: quase nenhum microrganismo o degrada; derrete perto de 100 °C e só endurece a 40–45 °C, então fica sólido a 37 °C e até em temperaturas mais altas; aceita a amostra ainda líquido sem matar as células; é transparente e não é nutriente.","Importância: superfície sólida e estável para colônias isoladas, cultura pura e contagem."]],
+["Um laboratório precisa de meio sólido para crescimento e isolamento de uma bactéria. Qual é a função do ágar e por que ele é adequado?",["Função do ágar: solidificar o meio, sem servir de alimento.","No meio sólido as células ficam presas no lugar e cada uma forma uma colônia separada: isso permite isolar, obter cultura pura, observar o aspecto da colônia e contar.","É adequado porque não é degradado, continua sólido na temperatura de incubação, endurece abaixo de 45 °C (dá para misturar a amostra), é transparente e inerte."]],
+["Explique o que é espécie microbiana e por que uma única característica não basta para dizer que dois microrganismos são da mesma espécie.",["Espécie bacteriana: grupo de linhagens com muitas características em comum e que difere de outros grupos.","Hoje se confirma pelo DNA: semelhança do 16S rRNA de cerca de 97–98,7% ou mais e genoma muito parecido (hibridização DNA-DNA ≥ 70% ou ANI ≥ 95%).","Uma só característica não basta: espécies diferentes podem ter a mesma forma (cocos), o mesmo Gram ou o mesmo teste positivo; e a mesma espécie pode mudar conforme o meio e as condições. Plasmídios também podem dar características a espécies diferentes.","Por isso se usa um conjunto de características fenotípicas e genéticas."]],
+["Explique a diferença entre características genéticas e fenotípicas e como ambas ajudam na identificação e classificação de um microrganismo.",["Fenotípicas: o que se observa. Forma e arranjo das células, coloração de Gram, aspecto da colônia, motilidade, provas bioquímicas (catalase, oxidase, fermentação de açúcares), sorologia, MALDI-TOF.","Genéticas: o que está no DNA. Sequência do 16S rRNA, PCR, conteúdo G+C, hibridização DNA-DNA, genoma.","O fenótipo é rápido e barato, mas pode variar com o ambiente; o genótipo é estável e mais preciso.","Juntas: o fenótipo faz a triagem e a identificação de rotina; a genética confirma e mostra o parentesco (classificação filogenética)."]],
+["Explique como a temperatura interfere no metabolismo e na taxa de crescimento, considerando as temperaturas mínima, ótima e máxima.",["A temperatura controla a velocidade das reações enzimáticas e a fluidez da membrana.","Mínima: abaixo dela a membrana fica rígida, o transporte de nutrientes para e as enzimas ficam lentas; não há crescimento, mas a célula costuma sobreviver.","Entre a mínima e a ótima: quanto mais quente, mais rápidas as reações e maior a taxa de crescimento.","Ótima: crescimento mais rápido.","Máxima: acima dela proteínas e enzimas desnaturam e a membrana é danificada; o crescimento para e a célula pode morrer.","A curva é assimétrica: a ótima fica mais perto da máxima."]],
+["A temperatura ótima ainda não foi atingida. O que ocorre com a taxa de crescimento se a temperatura sobe uns 10 °C, dentro da faixa adequada? E quando passa do limite máximo?",["Subindo 10 °C dentro da faixa, as reações enzimáticas aceleram e a taxa de crescimento aumenta, aproximadamente dobrando; o tempo de geração diminui.","Passando da máxima: desnaturação de proteínas e enzimas, dano à membrana e aos ácidos nucleicos; o crescimento cai bruscamente, para, e a célula pode morrer."]],
+["Mínima 5 °C, ótima 30 °C, máxima 45 °C. O que essas temperaturas representam e o que aconteceria a 2, 20, 30 e 50 °C?",["5 °C é o limite inferior de crescimento, 30 °C é o crescimento mais rápido, 45 °C é o limite superior. É um mesófilo.","2 °C: abaixo da mínima. Não cresce; metabolismo quase parado, mas tende a sobreviver (efeito bacteriostático).","20 °C: entre a mínima e a ótima. Cresce, porém mais devagar que a 30 °C.","30 °C: na ótima. Crescimento máximo.","50 °C: acima da máxima. Não cresce; proteínas desnaturam e a célula pode morrer."]],
+["Por que um microrganismo cresce mais rápido numa faixa de temperatura e como isso afeta a multiplicação e a propagação numa população animal ou no ambiente?",["Na faixa perto da ótima as enzimas trabalham na velocidade máxima e a membrana tem a fluidez ideal: o tempo de geração fica curto.","Multiplicação mais rápida = população maior em menos tempo (crescimento exponencial).","Consequência: maior carga do agente no animal e no ambiente, mais eliminação e mais chance de transmissão; alimentos fora da refrigeração estragam mais rápido.","Fora dessa faixa a multiplicação desacelera e a propagação diminui."]],
+["Uma bactéria patogênica vive num ambiente cuja temperatura varia muito ao longo do dia. Como isso influencia sua sobrevivência e multiplicação?",["Nas horas em que a temperatura fica perto da ótima, ela se multiplica rápido.","Abaixo da mínima (noite fria), para de crescer, mas costuma sobreviver; volta a crescer quando esquenta.","Acima da máxima (sol forte, superfície quente), pode sofrer desnaturação e morrer.","No total, cresce menos que em temperatura constante ótima; sobrevive enquanto não ultrapassar a máxima. Formas resistentes (endósporos) aguentam extremos."]],
+["Explique a importância da nutrição microbiana e por que a disponibilidade adequada de nutrientes é fundamental para metabolismo, crescimento e reprodução.",["Nutrição: obter do ambiente matéria (C, N, P, S, minerais) e energia (luz ou compostos químicos).","Catabolismo quebra nutrientes e gera energia (ATP); anabolismo usa essa energia e os precursores para fabricar proteínas, ácidos nucleicos, membrana e parede.","Com nutrientes adequados a célula duplica seus componentes e se divide (fissão binária).","Faltando um nutriente essencial, o crescimento fica limitado por ele (lei do mínimo)."]],
+["Explique o que são macronutrientes e sua importância para o crescimento microbiano. Por que são necessários em maiores quantidades?",["Macronutrientes: elementos exigidos em grande quantidade: C, H, O, N, P, S, K, Mg, Ca e Fe.","C: esqueleto das moléculas orgânicas (~50% do peso seco). N: proteínas e ácidos nucleicos (~12%). P: DNA, RNA, fosfolipídios e ATP. S: cisteína, metionina, vitaminas. K, Mg, Ca, Fe: enzimas, ribossomos, membrana, parede, endósporo, citocromos.","São exigidos em maior quantidade porque formam a própria estrutura da célula (são a matéria-prima) e participam de reações o tempo todo."]],
+["Explique o que são micronutrientes, sua importância e por que ser necessário em pequena quantidade não significa ser pouco importante.",["Micronutrientes (elementos-traço): Zn, Mn, Mo, Co, Cu, Ni, Se, entre outros; exigidos em quantidades mínimas.","Função: cofatores de enzimas. Ex.: Co na vitamina B12, Mo na nitrogenase e na nitrato redutase, Zn em polimerases, Ni na urease, Cu na citocromo oxidase, Mn na superóxido dismutase.","Pequena quantidade porque a enzima é reutilizada muitas vezes, mas sem eles a enzima não funciona e a via inteira para: o crescimento fica limitado."]],
+["Qual é a função das vitaminas na nutrição microbiana e por que sua ausência pode prejudicar o crescimento de determinados microrganismos?",["Vitaminas são fatores de crescimento: compostos orgânicos exigidos em pequenas quantidades.","Função: formam coenzimas. Niacina → NAD, riboflavina → FAD, ácido pantotênico → coenzima A, tiamina → TPP, ácido fólico → síntese de nucleotídeos, B12 → transferência de grupos.","Microrganismos que não sabem sintetizá-las (fastidiosos, como Lactobacillus e Haemophilus) dependem delas no meio; sem elas, as enzimas que precisam da coenzima param e o microrganismo não cresce, mesmo com o resto dos nutrientes."]],
+["Por que os microrganismos precisam de uma fonte de carbono? Diferencie os que usam carbono do CO₂ dos que dependem de compostos orgânicos.",["Carbono é o esqueleto de proteínas, açúcares, lipídios e ácidos nucleicos; sem ele não há como construir célula nova.","Autotróficos: usam CO₂ como fonte de carbono e o fixam em compostos orgânicos (ex.: cianobactérias, bactérias nitrificantes).","Heterotróficos: dependem de compostos orgânicos prontos (açúcares, aminoácidos, ácidos graxos); em geral também tiram energia deles (quimio-heterotróficos).","Patógenos de animais, fungos e protozoários são heterotróficos."]],
+["O que significa ser heterotrófico, quais compostos orgânicos podem ser fonte de carbono e por que são importantes para a célula?",["Heterotrófico: não usa o CO₂ como fonte de carbono; precisa de carbono orgânico já formado, tirado do ambiente ou do hospedeiro.","Fontes: açúcares (glicose, lactose), aminoácidos e proteínas, ácidos graxos e lipídios, ácidos orgânicos (lactato, acetato), álcoois.","Importância: dão os esqueletos de carbono para a biossíntese e, sendo oxidados, geram energia (ATP)."]],
+["Um microrganismo está num ambiente com açúcares, aminoácidos e ácidos graxos. Como esses compostos contribuem para sua nutrição? Relacione com heterotrofia e obtenção de carbono.",["Açúcares: glicólise e respiração ou fermentação → ATP e precursores para outras moléculas.","Aminoácidos: montagem direta de proteínas, fonte de nitrogênio e, após desaminação, de carbono e energia.","Ácidos graxos: formam os fosfolipídios da membrana e geram energia pela β-oxidação.","Como heterotrófico, ele não fixa CO₂: esses compostos orgânicos são sua fonte de carbono para manter e construir a célula e, em geral, também de energia."]],
+["O crescimento cai quando a principal fonte de carbono é retirada do meio. Por quê? Relacione fonte de carbono, síntese de componentes, energia e crescimento.",["A fonte de carbono dá os esqueletos para sintetizar proteínas, ácidos nucleicos, lipídios e parede.","No heterotrófico, ela também é a fonte de energia: sua oxidação gera ATP.","Sem ela faltam matéria-prima e energia: a síntese de componentes diminui, a célula não duplica seu conteúdo e não se divide.","Resultado: crescimento reduzido, que só se mantém enquanto houver reservas ou outra fonte de carbono menos eficiente."]],
+["O meio tem fonte de carbono, mas o microrganismo não cresce. Por que só carbono pode não bastar? Quais outros componentes considerar?",["O crescimento é limitado pelo nutriente essencial em menor quantidade (lei do mínimo): ter carbono não compensa a falta de outro.","Considerar: nitrogênio, fósforo, enxofre, K, Mg, Ca, Fe, micronutrientes, fatores de crescimento (vitaminas, aminoácidos, purinas e pirimidinas) e água.","Além da nutrição: pH, temperatura, oxigênio (aeróbio, anaeróbio, microaerófilo), CO₂ e pressão osmótica adequados."]],
+["Um laboratório precisa cultivar um microrganismo desconhecido de uma amostra. Que fatores considerar na escolha do meio (necessidades nutricionais, finalidade, isolamento)?",["Necessidades nutricionais: se pode ser exigente, usar meio complexo ou enriquecido (ágar sangue, ágar chocolate).","Origem da amostra e suspeita clínica: indicam quais microrganismos esperar.","Finalidade: isolar (meio sólido), multiplicar ou enriquecer (caldo), identificar (meios diferenciais), selecionar (meios seletivos: MacConkey para Gram-negativos, Sabouraud para fungos).","Condições: temperatura de incubação, atmosfera (aeróbia, anaeróbia, CO₂), pH e tempo.","Na prática, semear em mais de um meio ao mesmo tempo."]],
+["Meio nutricionalmente adequado, mas incubado em temperatura inadequada. Por que o microrganismo pode não crescer bem mesmo num meio rico? Relacione nutrição, metabolismo, temperatura e crescimento.",["Os nutrientes só viram célula nova através das enzimas do metabolismo.","A temperatura controla a velocidade dessas enzimas e a fluidez da membrana (por onde entram os nutrientes).","Frio demais: membrana rígida, transporte lento, enzimas lentas: o metabolismo não aproveita os nutrientes.","Calor demais: enzimas desnaturadas: o metabolismo para e a célula pode morrer.","Por isso nutrição e temperatura precisam estar certas ao mesmo tempo para haver crescimento."]],
+["Uma bactéria cresce muito devagar: o meio tem carbono e nutrientes, mas a temperatura está abaixo da ideal. Por que o crescimento está reduzido e quais fatores avaliar para achar a causa?",["Abaixo da ótima as reações enzimáticas e o transporte pela membrana ficam lentos: o tempo de geração aumenta.","Avaliar: temperatura real da estufa e se ela é a ótima da espécie; composição do meio (fatores de crescimento, N, P, minerais); pH; atmosfera (O₂, CO₂, anaerobiose); umidade e pressão osmótica; idade e tamanho do inóculo; possível contaminação ou inibidores no meio."]],
+["Para cultivar um microrganismo de uma amostra clínica é preciso escolher meio, nutrientes, fonte de carbono, meio sólido ou líquido e temperatura. Explique de forma integrada como cada decisão influencia o crescimento.",["Meio de cultura: tem de atender às exigências da espécie (complexo, enriquecido, seletivo ou diferencial conforme a suspeita).","Nutrientes: dão os elementos para construir a célula (N, P, S, minerais, micronutrientes, vitaminas); faltando um, o crescimento é limitado.","Fonte de carbono: esqueleto das moléculas e, no heterotrófico, fonte de energia.","Sólido ou líquido: sólido com ágar para isolar colônias e obter cultura pura; líquido para multiplicar ou enriquecer.","Temperatura: controla a velocidade do metabolismo; na ótima o crescimento é máximo, fora da faixa para ou mata.","Integrando: o meio fornece a matéria, o carbono fornece estrutura e energia, a consistência define como se observa o crescimento, e a temperatura define a velocidade com que tudo isso vira células novas."]]
+];
+const GT=["intro","intro","intro","intro","intro","meios","meios","meios","meios","ident","ident","temp","temp","temp","temp","temp","nutri","nutri","nutri","nutri","nutri","nutri","nutri","nutri","nutri","meios","temp","temp","meios"];
+
+/* estado salvo no navegador (só conveniência) */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let known=new Set(store.get("mic-known",[]));
+let active=new Set(store.get("mic-topics",Object.keys(TOPICS)));
+if(!active.size) active=new Set(Object.keys(TOPICS));
+let tab="cards";
+
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+function renderTopics(){
+  const el=$("#topics");
+  el.hidden=(tab==="resumo");
+  el.innerHTML=Object.entries(TOPICS).map(([k,v])=>{
+    const tot=CARDS.filter(c=>c[0]===k).length, ok=CARDS.filter(c=>c[0]===k&&known.has(c[1])).length;
+    return `<button class="chip" data-t="${k}" aria-pressed="${active.has(k)}">${v} · ${ok}/${tot}</button>`}).join("");
+  el.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.t;
+    if(active.has(k)&&active.size>1) active.delete(k); else active.add(k);
+    store.set("mic-topics",[...active]); renderTopics(); startCards(); startQuiz(); drawGuia();
+  });
+}
+
+/* ---------- cartões ---------- */
+let deck=[],flipped=false,missed=[],sessionTotal=0;
+function startCards(onlyMissed){
+  const pool=onlyMissed?missed.slice():CARDS.filter(c=>active.has(c[0]));
+  deck=shuffle(pool); sessionTotal=deck.length; flipped=false; missed=[]; drawCard();
+}
+function drawCard(){
+  const el=$("#tab-cards");
+  const done=sessionTotal-deck.length;
+  if(!deck.length){
+    el.innerHTML=`<div class="panel"><h2>Rodada concluída</h2>
+      <p class="sub">${missed.length?`Você errou ${missed.length} cartão(ões) nesta rodada. Repita só esses até acertar todos.`:"Acertou tudo nesta rodada."}</p>
+      <div class="row">${missed.length?`<button class="btn primary" id="again-miss">Repetir os errados</button>`:""}<button class="btn" id="again-all">Nova rodada completa</button></div></div>`;
+    $("#again-all").onclick=()=>startCards(false);
+    if(missed.length) $("#again-miss").onclick=()=>startCards(true);
+    return;
+  }
+  const c=deck[0];
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
+    <div class="meta"><span>${done} de ${sessionTotal} na rodada</span><span>${known.size} de ${CARDS.length} dominados</span></div>
+    <div class="bar"><i style="width:${sessionTotal?done/sessionTotal*100:0}%"></i></div>
+    <div class="card" id="card" tabindex="0" role="button" aria-label="Virar cartão">
+      <span class="tag">${TOPICS[c[0]]}</span>
+      <div class="front">${esc(c[1])}</div>
+      ${flipped?`<div class="back">${esc(c[2])}</div>`:`<div class="hint">Responda de cabeça, depois toque para ver.</div>`}
+    </div>
+    <div class="row">
+      ${flipped?`<button class="btn bad" id="miss">Errei</button><button class="btn good" id="hit">Acertei</button>`:`<button class="btn primary" id="flip">Ver resposta</button>`}
+    </div>
+    <p class="small">Teclado: espaço vira, 1 = errei, 2 = acertei.</p></div>`;
+  const flip=()=>{if(!flipped){flipped=true;drawCard()}};
+  $("#card").onclick=flip;
+  if(!flipped) $("#flip").onclick=flip;
+  else{ $("#miss").onclick=()=>answer(false); $("#hit").onclick=()=>answer(true); }
+}
+function answer(ok){
+  const c=deck.shift();
+  if(ok){known.add(c[1])}else{known.delete(c[1]);if(!missed.includes(c))missed.push(c);deck.splice(Math.min(3,deck.length),0,c);sessionTotal++}
+  store.set("mic-known",[...known]); flipped=false; drawCard(); renderTopics();
+}
+
+/* ---------- quiz ---------- */
+let qs=[],qi=0,score=0,chosen=null,wrongs=[],lastWrongs=[];
+let qsize=store.get("mic-qsize",15);
+function startQuiz(onlyWrong){
+  const pool=onlyWrong&&lastWrongs.length?lastWrongs.map(w=>QUIZ.find(q=>q[1]===w.q)):QUIZ.filter(q=>active.has(q[0]));
+  const n=onlyWrong||qsize===0?pool.length:qsize;
+  qs=shuffle(pool).slice(0,n).map(q=>({t:q[0],q:q[1],ans:q[2][0],opts:shuffle(q[2]),why:q[3]}));
+  qi=0;score=0;chosen=null;wrongs=[];drawQuiz();
+}
+function sizePicker(){
+  const total=QUIZ.filter(q=>active.has(q[0])).length;
+  return `<div class="chips" aria-label="Tamanho do quiz">${[[15,"15 questões"],[30,"30 questões"],[0,`Todas (${total})`]].map(([v,l])=>`<button class="chip qsz" data-n="${v}" aria-pressed="${qsize===v}">${l}</button>`).join("")}</div>`;
+}
+function bindSize(el){
+  el.querySelectorAll(".qsz").forEach(b=>b.onclick=()=>{qsize=+b.dataset.n;store.set("mic-qsize",qsize);startQuiz()});
+}
+function cheer(pct){
+  const hi=["Você estudou de verdade e isso aparece. Na prova é só mostrar o que já sabe.","Esse resultado é seu, fruto do seu esforço. Vai com calma e confiança na prova.","Mandou muito bem. Descansa um pouco, que a cabeça também precisa."];
+  const mid=["Cada erro aqui é uma questão a menos para errar na prova. Revisa as de baixo e faz de novo.","Você já sabe a maior parte. Mais uma rodada nas erradas e vai ficar redondo.","Tá no caminho certo. Respira, revisa os erros e tenta mais uma vez."];
+  const lo=["Errar agora faz parte de aprender. Volta nos cartões desses temas e depois tenta de novo.","Ninguém nasce sabendo microbiologia. Uma rodada de cartões e o próximo quiz já vai ser outro.","Não desanima: cada vez que você refaz, fica mais fácil. Eu acredito em você."];
+  const a=pct>=80?hi:pct>=60?mid:lo; return a[Math.floor(Math.random()*a.length)];
+}
+function drawQuiz(){
+  const el=$("#tab-quiz");
+  if(qi>=qs.length){
+    const pct=Math.round(score/qs.length*100);
+    el.innerHTML=`<div class="panel"><span class="eyebrow">Resultado</span><div class="score">${score}/${qs.length}</div>
+      <p class="sub">${pct>=80?"Bom nível para a prova. Revise os erros abaixo.":pct>=60?"Quase lá. Volte aos cartões dos temas que errou.":"Faça mais uma rodada de cartões antes de repetir o quiz."}</p>
+      <div class="cheer"><span class="cheer-h">${pct>=80?"Arrasou, Neném!":pct>=60?"Tá quase lá, Neném!":"Calma, Neném, você consegue!"}</span><p>${cheer(pct)}</p></div>
+      ${wrongs.length?`<h2>Para revisar</h2><ul class="miss">${wrongs.map(w=>`<li><strong>${esc(w.q)}</strong><br>${esc(w.ans)}</li>`).join("")}</ul>`:""}
+      <div class="row">${wrongs.length?`<button class="btn" id="qwrong">Refazer só as erradas</button>`:""}<button class="btn primary" id="qagain">Novo quiz</button></div>${sizePicker()}</div>`;
+    lastWrongs=wrongs.slice();
+    $("#qagain").onclick=()=>startQuiz(false);
+    if(wrongs.length) $("#qwrong").onclick=()=>startQuiz(true);
+    bindSize(el); return;
+  }
+  const q=qs[qi];
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
+    ${qi===0&&chosen===null?sizePicker():""}
+    <div class="meta"><span>Questão ${qi+1} de ${qs.length}</span><span>${score} acerto(s)</span></div>
+    <div class="bar"><i style="width:${qi/qs.length*100}%"></i></div>
+    <div class="panel"><span class="eyebrow">${TOPICS[q.t]}</span><p class="q">${esc(q.q)}</p>
+    <div class="opts">${q.opts.map((o,i)=>{
+      let cls="opt"; if(chosen!==null){ if(o===q.ans) cls+=" right"; else if(o===chosen) cls+=" wrong"; }
+      return `<button class="${cls}" data-i="${i}" ${chosen!==null?"disabled":""}>${esc(o)}</button>`}).join("")}</div>
+    ${chosen!==null?`<div class="why">${chosen===q.ans?"Certo. ":"Resposta: "+esc(q.ans)+". "}${esc(q.why)}</div>`:""}
+    </div>
+    ${chosen!==null?`<div class="row"><button class="btn primary" id="qnext">${qi+1<qs.length?"Próxima":"Ver resultado"}</button></div>`:""}</div>`;
+  el.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    chosen=q.opts[+b.dataset.i];
+    if(chosen===q.ans) score++; else wrongs.push(q);
+    drawQuiz();
+  });
+  if(chosen!==null) $("#qnext").onclick=()=>{qi++;chosen=null;drawQuiz()};
+  bindSize(el);
+}
+
+/* ---------- questões da revisão ---------- */
+function drawGuia(){
+  const drafts=store.get("mic-drafts",{});
+  const list=GUIA.map((g,i)=>[g,i]).filter(([g,i])=>active.has(GT[i]));
+  $("#tab-guia").innerHTML=`<div class="panel">
+    <h2>Questões da revisão</h2>
+    <p class="small">Escreva sua resposta primeiro, sem olhar. Depois abra a resposta de conferência e corrija o que faltou. Mostrando ${list.length} de ${GUIA.length} (filtre pelos temas acima).</p>
+    ${list.map(([g,i])=>`<div class="gq"><span class="n">Questão ${i+1} · ${TOPICS[GT[i]]}</span><p><strong>${esc(g[0])}</strong></p>
+      <textarea id="g${i}" data-i="${i}" placeholder="Sua resposta">${esc(drafts[i]||"")}</textarea>
+      <div class="row"><button class="btn" data-g="${i}">Ver resposta de conferência</button></div>
+      <div class="model" id="m${i}" hidden><ul>${g[1].map(l=>`<li>${esc(l)}</li>`).join("")}</ul></div></div>`).join("")}
+    <p class="small">Enunciados resumidos da folha de revisão. Respostas montadas com base nos livros-texto de microbiologia (Tortora, Madigan); confira com o material da professora.</p></div>`;
+  document.querySelectorAll("#tab-guia textarea").forEach(t=>t.oninput=()=>{const d=store.get("mic-drafts",{});d[t.dataset.i]=t.value;store.set("mic-drafts",d)});
+  document.querySelectorAll("#tab-guia [data-g]").forEach(b=>b.onclick=()=>{const m=$("#m"+b.dataset.g);m.hidden=!m.hidden;b.textContent=m.hidden?"Ver resposta de conferência":"Esconder resposta"});
+}
+
+/* ---------- resumo ---------- */
+function drawResumo(){
+  $("#tab-resumo").innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+  <div class="panel"><h2>Postulados de Koch</h2><ol class="miss">
+    <li>O microrganismo está presente em todos os casos da doença.</li>
+    <li>É isolado e cultivado em cultura pura.</li>
+    <li>A cultura pura inoculada em animal sadio e suscetível causa a mesma doença.</li>
+    <li>É reisolado do animal inoculado e é igual ao original.</li></ol>
+    <p class="small">Koch: carbúnculo (1876), tuberculose (1882), cólera (1883). Ágar: Fanny Hesse. Placa: Julius Petri.</p></div>
+
+  <div class="panel"><h2>Temperatura</h2><div class="tablewrap"><table>
+    <tr><th>Faixa</th><th>O que acontece</th></tr>
+    <tr><td>Abaixo da mínima</td><td>Membrana rígida, enzimas lentas: não cresce, mas sobrevive</td></tr>
+    <tr><td>Mínima → ótima</td><td>Cresce cada vez mais rápido (+10 °C ≈ dobra)</td></tr>
+    <tr><td>Ótima</td><td>Crescimento máximo</td></tr>
+    <tr><td>Acima da máxima</td><td>Desnaturação de proteínas: para e pode morrer</td></tr>
+  </table></div>
+  <div class="tablewrap"><table>
+    <tr><th>Grupo</th><th>Ótima</th><th>Exemplo</th></tr>
+    <tr><td>Psicrófilo</td><td>≤ 15 °C</td><td>Polos, mar profundo</td></tr>
+    <tr><td>Psicrotrófico</td><td>20–30 °C (cresce a 0–7 °C)</td><td>Listeria na geladeira</td></tr>
+    <tr><td>Mesófilo</td><td>20–45 °C</td><td>Patógenos de animais (~37 °C)</td></tr>
+    <tr><td>Termófilo</td><td>45–80 °C</td><td>Fontes termais, compostagem</td></tr>
+    <tr><td>Hipertermófilo</td><td>&gt; 80 °C</td><td>Arqueias de fontes vulcânicas</td></tr>
+  </table></div><p class="small">Exemplo da questão 14 (mín 5, ót 30, máx 45 °C): 2 °C não cresce · 20 °C lento · 30 °C máximo · 50 °C morre.</p></div>
+
+  <div class="panel"><h2>Meios de cultura</h2><div class="tablewrap"><table>
+    <tr><th>Critério</th><th>Tipo</th><th>Para quê</th></tr>
+    <tr><td rowspan="3">Consistência</td><td>Líquido (caldo)</td><td>Multiplicar, enriquecer; turvação</td></tr>
+    <tr><td>Semissólido (0,3–0,5% ágar)</td><td>Motilidade</td></tr>
+    <tr><td>Sólido (1,5–2% ágar)</td><td>Colônias isoladas, cultura pura, contagem</td></tr>
+    <tr><td rowspan="2">Composição</td><td>Quimicamente definido</td><td>Composição exata conhecida</td></tr>
+    <tr><td>Complexo</td><td>Peptona, extratos de carne e levedura</td></tr>
+    <tr><td rowspan="4">Função</td><td>Seletivo</td><td>Inibe uns, favorece outros (MacConkey, Sabouraud)</td></tr>
+    <tr><td>Diferencial</td><td>Distingue quem cresce (ágar sangue, MacConkey)</td></tr>
+    <tr><td>Enriquecimento</td><td>Favorece quem está em minoria (caldo selenito)</td></tr>
+    <tr><td>Enriquecido</td><td>Para exigentes (ágar chocolate)</td></tr>
+  </table></div></div>
+
+  <div class="panel"><h2>Gelatina × ágar</h2><div class="tablewrap"><table>
+    <tr><th></th><th>Gelatina</th><th>Ágar</th></tr>
+    <tr><td>Origem</td><td>Proteína animal (colágeno)</td><td>Polissacarídeo de algas vermelhas</td></tr>
+    <tr><td>Derrete a</td><td>~25–28 °C</td><td>~100 °C</td></tr>
+    <tr><td>Endurece a</td><td>Abaixo de ~25 °C</td><td>~40–45 °C</td></tr>
+    <tr><td>A 37 °C</td><td>Líquida</td><td>Sólido</td></tr>
+    <tr><td>Degradação</td><td>Gelatinase liquefaz</td><td>Quase nenhum microrganismo degrada</td></tr>
+  </table></div></div>
+
+  <div class="panel"><h2>Meio de cultura ideal</h2><div class="tablewrap"><table>
+    <tr><th>Característica</th><th>Por quê</th></tr>
+    <tr><td>Custo</td><td>Barato e disponível para uso em rotina e escala</td></tr>
+    <tr><td>Composição</td><td>Atende à exigência nutricional e é constante: resultados reprodutíveis</td></tr>
+    <tr><td>Armazenamento</td><td>Estável, fácil de preparar, esterilizar e guardar</td></tr>
+    <tr><td>Recuperação do produto</td><td>Facilita separar e purificar células, enzimas, antibióticos</td></tr>
+    <tr><td>Impacto ambiental</td><td>Pouco resíduo, fácil de tratar e descartar</td></tr>
+  </table></div></div>
+
+  <div class="panel"><h2>Nutrientes</h2><div class="tablewrap"><table>
+    <tr><th>Elemento</th><th>Onde entra</th></tr>
+    <tr><td>C</td><td>Esqueleto de todas as moléculas (~50% do peso seco)</td></tr>
+    <tr><td>N</td><td>Proteínas, ácidos nucleicos (~12%)</td></tr>
+    <tr><td>P</td><td>DNA, RNA, fosfolipídios, ATP</td></tr>
+    <tr><td>S</td><td>Cisteína, metionina, vitaminas, coenzima A</td></tr>
+    <tr><td>K · Mg · Ca · Fe</td><td>Enzimas · ribossomos e membranas · parede e endósporo · citocromos</td></tr>
+    <tr><td>Zn, Mn, Mo, Co, Cu, Ni</td><td>Micronutrientes: cofatores de enzimas (Co → B12, Mo → nitrogenase)</td></tr>
+  </table></div>
+  <div class="tablewrap"><table>
+    <tr><th>Vitamina</th><th>Coenzima</th></tr>
+    <tr><td>Niacina</td><td>NAD</td></tr><tr><td>Riboflavina (B2)</td><td>FAD</td></tr>
+    <tr><td>Ácido pantotênico</td><td>Coenzima A</td></tr><tr><td>Tiamina (B1)</td><td>TPP</td></tr>
+    <tr><td>Ácido fólico</td><td>Síntese de nucleotídeos</td></tr>
+  </table></div></div>
+
+  <div class="panel"><h2>Tipos nutricionais</h2><div class="tablewrap"><table>
+    <tr><th>Tipo</th><th>Energia</th><th>Carbono</th><th>Exemplo</th></tr>
+    <tr><td>Fotoautotrófico</td><td>Luz</td><td>CO₂</td><td>Cianobactérias, algas</td></tr>
+    <tr><td>Foto-heterotrófico</td><td>Luz</td><td>Orgânico</td><td>Bactérias púrpuras não sulfurosas</td></tr>
+    <tr><td>Quimioautotrófico</td><td>Compostos inorgânicos</td><td>CO₂</td><td>Bactérias nitrificantes</td></tr>
+    <tr><td>Quimio-heterotrófico</td><td>Compostos orgânicos</td><td>Orgânico</td><td>Patógenos, fungos, protozoários</td></tr>
+  </table></div><p class="small">Lei do mínimo: o crescimento é limitado pelo nutriente essencial em menor disponibilidade.</p></div></div>`;
+}
+
+/* ---------- abas ---------- */
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{
+  tab=b.dataset.tab;
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["cards","quiz","guia","resumo"].forEach(t=>$("#tab-"+t).hidden=t!==tab);
+  renderTopics();
+});
+document.addEventListener("keydown",e=>{
+  if(tab!=="cards"||e.target.tagName==="TEXTAREA"||!deck.length) return;
+  if(e.code==="Space"){e.preventDefault(); if(!flipped){flipped=true;drawCard()}}
+  else if(flipped&&e.key==="1") answer(false);
+  else if(flipped&&e.key==="2") answer(true);
+});
+
+renderTopics(); startCards(); startQuiz(); drawGuia(); drawResumo();
+</script>
+
+</body>
+</html>
